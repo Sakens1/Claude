@@ -120,6 +120,21 @@ Una conclusión que solo resume el procedimiento obtiene como máximo 6 pts.
 6. **Coherencia interna**: los valores de las tablas, los gráficos y las respuestas deben coincidir entre sí.
 7. **Datos sospechosos** o copiados: no se descuenta automáticamente; se informa al docente.
 
+## Criterios homologados (decididos al corregir el primer lote)
+
+| Situación | Criterio |
+|---|---|
+| Rapidez calculada como v = 2·d/t (o d/t) en vez de derivar d(t) | 0/2 en el criterio de rapidez de la Tabla 3 (confirmado por el docente: el taller pide derivar). Los ítems siguientes se corrigen con sus valores. |
+| d(t): datos bien ubicados pero rótulos de los ejes intercambiados | 2/3 en el criterio del gráfico. |
+| d(t): ejes invertidos (t en el eje Y) | 1/3 en el criterio del gráfico; si la ecuación es t(d) y no d(t), 0/3 en la ecuación. |
+| Ecuación escrita sin unidades o con "x" en vez de t | 2/3 en el criterio de la ecuación (un solo descuento aunque falten ambas cosas). |
+| Gráfico sin leyenda y/o sin unidades en los ejes | Mitad del criterio del gráfico (3/6). |
+| Eje X del gráfico de energías con el número de medición en vez de d | 4/6 en el criterio del gráfico. |
+| Gráfico de K_Tot, U_g y E_mec sin ninguna línea de tendencia | 0/4 en ajustes (el parcial de 2 es para ajustes no lineales o sin ecuación). |
+| Promedio y error con distinto número de decimales | 1/2 en el criterio de expresión del resultado. |
+| Altura medida hacia abajo desde el inicio (U_g crece al bajar) | 1/2 en el criterio de alturas; el análisis que no lo detecta se descuenta en el ítem de energías. |
+| Nota | Se redondea a un decimal hacia arriba desde 0,05 (5,35 → 5,4). |
+
 ## Formato del informe de revisión
 
 1. Identificación del grupo y archivo.

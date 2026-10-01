@@ -8,6 +8,11 @@
   "patron": "^Dada la teor[ií]a"
  },
  {
+  "id": "_fin_tabla3",
+  "patron": "^A partir de la informaci[oó]n te[oó]rica",
+  "puntua": false
+ },
+ {
   "id": "Hipótesis",
   "patron": "Formule una hip[oó]tesis"
  },

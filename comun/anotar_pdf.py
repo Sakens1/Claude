@@ -216,6 +216,21 @@ def buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes):
     return False
 
 
+def limites_pagina(page):
+    """(y_superior, y_inferior) utilizables: bajo la línea horizontal del encabezado y sobre la del pie,
+    si existen; si no, los márgenes por defecto."""
+    H, W = page.rect.height, page.rect.width
+    arriba, abajo = ZONA_ENCABEZADO, H - ZONA_PIE
+    for dib in page.get_drawings():
+        r = dib["rect"]
+        if r.height <= 3 and r.width >= W * 0.5:
+            if r.y1 < 140:
+                arriba = max(arriba, r.y1 + 3)
+            elif r.y0 > H - 140:
+                abajo = min(abajo, r.y0 - 3)
+    return arriba, abajo
+
+
 # ---------------------------------------------------------------- corrección
 def anotar(origen, corr, salida, spec):
     doc = pymupdf.open(origen)
@@ -248,9 +263,9 @@ def anotar(origen, corr, salida, spec):
         # tramos del ítem: (pagina, y_desde, y_hasta)
         tramos = []
         for p in range(p_ini, p_fin + 1):
-            H = doc[p].rect.height
-            desde = r_ini.y1 + 1 if p == p_ini else ZONA_ENCABEZADO
-            hasta = y_fin if p == p_fin else H - ZONA_PIE
+            arriba, abajo = limites_pagina(doc[p])
+            desde = r_ini.y1 + 1 if p == p_ini else arriba
+            hasta = min(y_fin, abajo) if p == p_fin else abajo
             if hasta > desde:
                 tramos.append((p, desde, hasta))
         titulo = f"({fmt(it['puntaje'])}/{fmt(it['max'])}) "
