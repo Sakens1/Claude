@@ -13,7 +13,7 @@ Agente especializado en corregir el **Taller 3: Flexión de una viga en voladizo
 | `pauta/Pauta_Taller3_Viga_Voladiza.docx` | La misma pauta en Word, para el docente. |
 | `conocimiento/marco_teorico.md` | Resumen de la guía de estudio y notas físicas para el revisor. |
 | `herramientas/verificar_calculos.py` | Recalcula I, pendiente, Y, E% e incertidumbre con los datos de un grupo y detecta errores de unidades. |
-| `herramientas/anotar_pdf.py` | Genera el taller corregido: el PDF del grupo con el puntaje junto a cada ítem y comentarios bajo los ítems con descuento, más una hoja resumen. |
+| `herramientas/anotar_pdf.py` | Genera el taller corregido: copia exacta del PDF del grupo con el puntaje junto a cada ítem y un comentario en los espacios en blanco del ítem cuando hay descuento. |
 | `herramientas/extraer_taller.py` | Extrae a texto un taller .docx/.pdf (incluida la Tabla 2 dentro del cuadro de texto) y sus imágenes. |
 | `herramientas/generar_solucion.py` | Genera el taller desarrollado con los datos de cualquier laboratorio (o los de ejemplo). |
 | `herramientas/pauta_a_docx.py` | Regenera la pauta .docx desde el .md. |
@@ -51,7 +51,7 @@ En Claude Code, dentro de este repositorio:
 
 El agente extrae cada taller, recalcula con `verificar_calculos.py`, puntúa ítem por ítem con la pauta y entrega:
 
-- **El taller corregido** (`<taller>_CORREGIDO.pdf`): el mismo documento del grupo, con el puntaje de cada ítem en el margen, un comentario bajo cada ítem con descuento, el puntaje total y la nota en la primera página y una hoja final de resumen.
+- **El taller corregido** (`<taller>_CORREGIDO.pdf`): copia exacta del documento del grupo (mismas páginas, sin mover nada), con el puntaje de cada ítem en el margen, un comentario en rojo dentro de cada ítem con descuento y el puntaje total y la nota en el margen superior de la primera página.
 - **Un informe para el docente** (`.md`): justificación por ítem, recálculo y observaciones.
 
 Las revisiones se guardan en `viga-voladizo/revisiones/`, carpeta excluida de git porque contiene nombres y notas.
@@ -63,7 +63,7 @@ python3 viga-voladizo/herramientas/verificar_calculos.py --b 25 --h 0.8 --L 250 
   --masas 10 20 30 40 50 --masas-en-g --flechas 2.5 5 7.5 10 12 --flechas-en-mm
 ```
 
-Requisitos: Python 3. `anotar_pdf.py` usa `pymupdf`. `verificar_calculos.py` no necesita librerías externas; `extraer_taller.py` usa `lxml` y los generadores usan `python-docx` y `matplotlib`.
+Requisitos: Python 3. `anotar_pdf.py` usa `pymupdf` y `numpy`. `verificar_calculos.py` no necesita librerías externas; `extraer_taller.py` usa `lxml` y los generadores usan `python-docx` y `matplotlib`.
 
 ## Ajustes
 
