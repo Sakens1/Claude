@@ -137,8 +137,15 @@ def localizar_items(doc, spec):
     return pos
 
 
-def zona_texto(doc):
-    """Límites horizontales del texto (x0, x1) según los enunciados del documento."""
+def zona_texto(doc, pos=None):
+    """Límites horizontales del texto (x0, x1). Usa el margen izquierdo de los enunciados de ítem
+    (márgenes simétricos, como en Word); si no hay, los bloques anchos del documento."""
+    W = doc[0].rect.width
+    if pos:
+        x0s = sorted(r.x0 for _, r in pos.values())
+        x0 = x0s[len(x0s) // 2]
+        if 25 <= x0 <= W * 0.3:
+            return x0, W - x0
     x0s, x1s = [], []
     for page in doc:
         for b in page.get_text("blocks"):
@@ -146,7 +153,7 @@ def zona_texto(doc):
                 x0s.append(b[0])
                 x1s.append(b[2])
     if not x0s:
-        return 50, doc[0].rect.width - 50
+        return 50, W - 50
     x0s.sort()
     x1s.sort()
     return x0s[len(x0s) // 10], x1s[-max(1, len(x1s) // 10)]
@@ -155,7 +162,7 @@ def zona_texto(doc):
 class MapaBlancos:
     """Píxeles ocupados de una página, para buscar rectángulos en blanco donde escribir."""
 
-    TOLERANCIA = 6  # píxeles oscuros admitidos por fila (bordes verticales de los recuadros)
+    TOLERANCIA = 1  # píxeles oscuros admitidos por fila (ruido); los bordes de recuadros NO se cruzan
 
     def __init__(self, page):
         pix = page.get_pixmap(matrix=pymupdf.Matrix(DPI_ANALISIS, DPI_ANALISIS),
@@ -167,13 +174,42 @@ class MapaBlancos:
         for info in page.get_image_info():
             x0, y0, x1, y1 = info["bbox"]
             self.ocupar(x0 - 2, y0 - 2, x1 + 2, y1 + 2)
+        # líneas verticales (bordes de recuadros, tablas y gráficos) y gráficos vectoriales
+        self.verticales = []
+        dibujos = page.get_drawings()
+        rects = []
+        for dib in dibujos:
+            for it in dib["items"]:
+                if it[0] == "l":
+                    p1, p2 = it[1], it[2]
+                    if abs(p1.x - p2.x) < 1.5 and abs(p1.y - p2.y) >= 12:
+                        self.verticales.append(((p1.x + p2.x) / 2, min(p1.y, p2.y), max(p1.y, p2.y)))
+                elif it[0] == "re":
+                    r = it[1]
+                    if 12 <= r.height < page.rect.height * 0.9:
+                        if r.width <= 2.5:
+                            self.verticales.append(((r.x0 + r.x1) / 2, r.y0, r.y1))
+                        else:
+                            self.verticales += [(r.x0, r.y0, r.y1), (r.x1, r.y0, r.y1)]
+                    if r.width > 80 and r.height > 50 and r.width * r.height < 0.4 * page.rect.width * page.rect.height:
+                        rects.append(r)  # (los rectángulos casi de página completa son fondos, no gráficos)
+        # gráficos vectoriales (p. ej. de Excel): si un rectángulo contiene muchos trazos, se ocupa la
+        # zona que abarcan esos trazos (no el recuadro completo, que puede tener espacio libre para escribir)
+        for r in rects:
+            dentro = [d["rect"] for d in dibujos
+                      if r.contains(d["rect"]) and d["rect"].get_area() < 0.9 * r.get_area()]
+            if len(dentro) >= 15:
+                u = pymupdf.Rect(dentro[0])
+                for q in dentro[1:]:
+                    u |= q
+                self.ocupar(u.x0 - 3, u.y0 - 3, u.x1 + 3, u.y1 + 3)
 
     def buscar(self, y0, y1, x0, x1, alto):
         """Primera y (en puntos) en [y0, y1 - alto] con el rectángulo x0..x1 × alto en blanco."""
-        c0, c1 = int(x0 * self.z), int(x1 * self.z)
+        c0, c1 = max(0, int(x0 * self.z)), min(self.oscuro.shape[1], int(np.ceil(x1 * self.z)))
         f0, f1 = max(0, int(y0 * self.z)), min(self.oscuro.shape[0], int(y1 * self.z))
         necesita = int(np.ceil(alto * self.z))
-        if f1 - f0 < necesita:
+        if f1 - f0 < necesita or c1 <= c0:
             return None
         blanca = self.oscuro[f0:f1, c0:c1].sum(axis=1) <= self.TOLERANCIA
         corrida = 0
@@ -184,32 +220,48 @@ class MapaBlancos:
         return None
 
     def ocupar(self, x0, y0, x1, y1):
-        self.oscuro[int(y0 * self.z):int(np.ceil(y1 * self.z)), int(x0 * self.z):int(np.ceil(x1 * self.z))] = True
+        self.oscuro[max(0, int(y0 * self.z)):int(np.ceil(y1 * self.z)),
+                    max(0, int(x0 * self.z)):int(np.ceil(x1 * self.z))] = True
+
+    def intervalos(self, a, b, tx0, tx1):
+        """Franjas horizontales delimitadas por líneas verticales que cruzan [a, b] (p. ej. el interior
+        de un recuadro), además de la zona de texto completa."""
+        xs = sorted({tx0, tx1} | {x for x, v0, v1 in self.verticales
+                                  if v1 > a and v0 < b and tx0 - 15 < x < tx1 + 15})
+        res = [(tx0, tx1)]
+        for L, R in zip(xs, xs[1:]):
+            if R - L >= 110 and (L, R) != (tx0, tx1):
+                res.append((L, R))
+        return sorted(set(res), key=lambda iv: -(iv[1] - iv[0]))
 
 
-ANCHOS = [1.0, 0.75, 0.6, 0.5, 0.42]  # fracciones del ancho de texto que se prueban
+ANCHOS = [1.0, 0.75, 0.6, 0.5, 0.46, 0.42, 0.38]  # fracciones del ancho disponible que se prueban
+MARGEN_INTERNO = 5                    # separación con bordes de recuadros
 
 
 def buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes):
-    """Ubica el comentario en el primer espacio en blanco del ítem (en orden de lectura).
-    Prefiere letra más grande y luego mayor ancho; prueba rectángulos alineados a la izquierda,
-    a la derecha y en posiciones intermedias (p. ej. al lado de una tabla o figura)."""
-    ancho_total = (tx1 - 6) - (tx0 + 6)
-    for f in ANCHOS:            # primero el ancho completo (bajo lo escrito), aunque con letra menor
+    """Ubica el comentario en el primer espacio en blanco del ítem (en orden de lectura), sin cruzar
+    texto, imágenes, gráficos ni bordes de recuadros. Prefiere el ancho completo de la franja disponible
+    (aunque con letra menor) y prueba posiciones a la izquierda, a la derecha e intermedias."""
+    for f in ANCHOS:
         for tam in TAMANOS:
-            w = ancho_total * f
-            lineas = envolver(texto, w - 2, FUENTE, tam)
-            alto = len(lineas) * tam * INTERLINEA + 3
-            xs = sorted({tx0 + 6 + k * (ancho_total - w) / 6 for k in range(7)})
             for p, a, b in tramos:
                 mejor = None
-                for x in xs:
-                    y = mapa(p).buscar(a, b, x - 2, x + w + 2, alto + 4)
-                    if y is not None and (mejor is None or y < mejor[1] - 0.5):
-                        mejor = (x, y)
+                for L, R in mapa(p).intervalos(a, b, tx0, tx1):
+                    disp = (R - MARGEN_INTERNO) - (L + MARGEN_INTERNO)
+                    w = disp * f
+                    if w < 80:
+                        continue
+                    lineas = envolver(texto, w - 2, FUENTE, tam)
+                    alto = len(lineas) * tam * INTERLINEA + 1.5
+                    for k in range(7):
+                        x = L + MARGEN_INTERNO + k * (disp - w) / 6
+                        y = mapa(p).buscar(a, b, x - 2, x + w + 2, alto + 3)
+                        if y is not None and (mejor is None or y < mejor[1] - 0.5):
+                            mejor = (x, y, w, lineas, alto)
                 if mejor:
-                    x, y = mejor
-                    y += 2
+                    x, y, w, lineas, alto = mejor
+                    y += 1.5
                     pendientes.append((p, x, y, lineas, tam))
                     mapa(p).ocupar(x - 2, y - 2, x + w + 2, y + alto + 2)
                     return True
@@ -224,9 +276,10 @@ def limites_pagina(page):
     for dib in page.get_drawings():
         r = dib["rect"]
         if r.height <= 3 and r.width >= W * 0.5:
-            if r.y1 < 140:
+            # solo en las franjas de encabezado y pie; más adentro son bordes de recuadros
+            if r.y1 < 115:
                 arriba = max(arriba, r.y1 + 3)
-            elif r.y0 > H - 140:
+            elif r.y0 > H - 85:
                 abajo = min(abajo, r.y0 - 3)
     return arriba, abajo
 
@@ -235,7 +288,7 @@ def limites_pagina(page):
 def anotar(origen, corr, salida, spec):
     doc = pymupdf.open(origen)
     pos = localizar_items(doc, spec)
-    tx0, tx1 = zona_texto(doc)
+    tx0, tx1 = zona_texto(doc, pos)
     mapas = {}
 
     def mapa(p):
@@ -297,8 +350,26 @@ def anotar(origen, corr, salida, spec):
         etiqueta = f"{fmt(it['puntaje'])}/{fmt(it['max'])}"
         tam = 9
         ancho = FUENTE_B.text_length(etiqueta, fontsize=tam) + 8
-        x = min(tx1 + 4, W - ancho - 3)
-        caja = pymupdf.Rect(x, r.y0 - 2, x + ancho, r.y0 + tam + 4)
+        alto_c = tam + 6
+        m = mapa(p)
+        x = y0c = None
+        # 1) a la altura del enunciado; 2) justo encima; 3) justo debajo. Lo más a la derecha posible,
+        #    sin tapar nada (bordes, gráficos, texto).
+        for ya in (r.y0 - 2, r.y0 - alto_c - 1, r.y1 + 1):
+            xx = W - ancho - 3
+            limite = r.x1 + 2 if ya == r.y0 - 2 else tx0
+            while xx >= limite:
+                if m.buscar(ya - 1, ya + alto_c + 1, xx - 1, xx + ancho + 1, alto_c + 1) is not None:
+                    x, y0c = xx, ya
+                    break
+                xx -= 2
+            if x is not None:
+                break
+        if x is None:  # sin espacio libre cerca: margen derecho, a la altura del enunciado
+            x, y0c = min(tx1 + 4, W - ancho - 3), r.y0 - 2
+        y1c = y0c + alto_c
+        m.ocupar(x - 1, y0c - 1, x + ancho + 1, y1c + 1)
+        caja = pymupdf.Rect(x, y0c, x + ancho, y1c)
         color = VERDE if it["puntaje"] >= it["max"] else ROJO
         page.draw_rect(caja, color=color, fill=(1, 1, 1), width=1.0)
         escribir(page, caja.x0 + 4, caja.y1 - 4, etiqueta, tam, color, negrita=True)

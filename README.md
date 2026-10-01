@@ -9,8 +9,9 @@ Agentes de Claude Code que corrigen talleres de laboratorio resueltos por los es
 
 Herramientas compartidas en `comun/`:
 
-- `anotar_pdf.py`: escribe puntajes y comentarios sobre una copia exacta del PDF entregado, en los espacios en blanco de cada ítem (los ítems se definen en el `items.json` de cada taller).
+- `anotar_pdf.py`: escribe puntajes y comentarios sobre una copia exacta del PDF entregado, en los espacios en blanco de cada ítem, sin cruzar texto, imágenes, gráficos ni bordes de recuadros (los ítems se definen en el `items.json` de cada taller).
 - `extraer_taller.py`: extrae a texto un taller .docx o .pdf, con sus tablas e imágenes.
+- `verificar_superposicion.py`: compara el PDF corregido con el original y avisa si alguna marca tapa contenido.
 - `md_a_docx.py`: convierte una pauta en Markdown a Word.
 - `docx_util.py`: funciones para escribir respuestas dentro de las plantillas .docx.
 

@@ -58,6 +58,7 @@ Los datos se obtienen en un **simulador web** y la exigencia en la toma de datos
    - Ejecuta: `python3 rototraslacion/herramientas/anotar_pdf.py <taller.pdf> <correccion.json> -o <taller>_CORREGIDO.pdf`
    - Si la herramienta avisa que un comentario no cupo (queda como nota emergente, que no se imprime), acórtalo y vuelve a ejecutarla hasta que no haya avisos. Si avisa que **no encontró** el enunciado de algún ítem (el grupo cambió el texto de la plantilla), crea una copia de `rototraslacion/herramientas/items.json` con un patrón que sí aparezca en ese PDF y pásala con `--items`.
    - Revisa visualmente el resultado (`pdftoppm -r 60 -png` y Read): las marcas no deben tapar contenido ni quedar sobre gráficos.
+   - Ejecuta además `python3 comun/verificar_superposicion.py <taller_original.pdf> <taller>_CORREGIDO.pdf`: debe responder "OK". Si informa superposiciones, revisa esa zona, acorta el comentario o ajusta y repite.
    - Si el taller vino en .docx, pide al usuario la versión PDF (o conviértelo si hay LibreOffice disponible).
 
 ## Formato de salida

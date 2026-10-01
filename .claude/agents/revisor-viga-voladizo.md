@@ -55,6 +55,7 @@ Todas las rutas son relativas a la raíz del repositorio:
    - Ejecuta: `python3 viga-voladizo/herramientas/anotar_pdf.py <taller.pdf> <correccion.json> -o <taller>_CORREGIDO.pdf`
    - Si la herramienta avisa que un comentario no cupo (queda como nota emergente, que no se imprime), acórtalo y vuelve a ejecutarla hasta que no haya avisos.
    - Revisa visualmente el resultado (`pdftoppm -r 60 -png` y Read): las marcas no deben tapar contenido ni quedar sobre gráficos.
+   - Ejecuta además `python3 comun/verificar_superposicion.py <taller_original.pdf> <taller>_CORREGIDO.pdf`: debe responder "OK". Si informa superposiciones, revisa esa zona, acorta el comentario o ajusta y repite.
    - Si el taller vino en .docx, pide al usuario la versión PDF (o conviértelo si hay LibreOffice disponible).
 
 ## Formato de salida
