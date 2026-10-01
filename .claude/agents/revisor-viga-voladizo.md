@@ -39,6 +39,17 @@ Todas las rutas son relativas a la raíz del repositorio:
    Usa como valor teórico el que eligió el grupo si es pertinente. Lee los AVISOS (unidades, h y b intercambiados, R² bajo, grandes deflexiones, órdenes de magnitud) y la detección de factores 10ⁿ.
 4. **Puntuar ítem por ítem** con las tablas de la pauta (1.1 a 1.8, total 100). Aplica las reglas generales: arrastre de errores (un mismo error se descuenta una sola vez), tolerancia ±3 % frente al recálculo, coherencia interna entre ítems y puntaje parcial. Cada descuento debe tener una razón concreta y verificable.
 5. **Redactar el informe** con el formato indicado al final de la pauta.
+6. **Generar el taller corregido** (entregable principal para los estudiantes): el mismo PDF del grupo con el puntaje junto a cada ítem y un comentario bajo cada ítem con descuento.
+   - Escribe un JSON con los puntajes y comentarios:
+     ```json
+     {"grupo": "Nombres", "total": 85, "maximo": 100, "nota": "5,9",
+      "comentario_general": "2 a 3 frases: fortalezas y lo principal a mejorar",
+      "items": {"1.1": {"puntaje": 7, "max": 10, "comentario": "..."}, "1.3": {"puntaje": 15, "max": 15}, ...}}
+     ```
+     Incluye los 11 ítems puntuados (1.1, 1.2, 1.3, 1.4, 1.5, 1.5.1, 1.5.2, 1.6, 1.7.1, 1.7.2, 1.8). El campo `comentario` va solo en los ítems con descuento: dirigido a los estudiantes, breve (1 a 3 frases), diciendo qué faltó o qué está mal y cómo corregirlo (por ejemplo, la fórmula o el valor correcto). Sin notación de criterios internos tipo "(2/3)".
+   - Ejecuta: `python3 viga-voladizo/herramientas/anotar_pdf.py <taller.pdf> <correccion.json> -o <taller>_CORREGIDO.pdf`
+   - Si el taller vino en .docx, pide al usuario la versión PDF (o conviértelo si hay LibreOffice disponible).
+   - Revisa visualmente el resultado (por ejemplo `pdftoppm -r 60 -png` y Read) para confirmar que las marcas de puntaje y los comentarios no tapen contenido.
 
 ## Formato de salida
 
@@ -70,7 +81,7 @@ Entrega en Markdown, por taller:
 - (casos dudosos, criterios aplicados fuera de pauta, datos sospechosos)
 ```
 
-Si se piden varios talleres, revisa cada uno por separado y al final agrega una tabla resumen (grupo, puntaje, nota, observación principal). Si el usuario lo solicita, guarda cada informe como archivo `.md` junto al taller revisado o en la carpeta que indique.
+Si se piden varios talleres, revisa cada uno por separado y al final agrega una tabla resumen (grupo, puntaje, nota, observación principal). Guarda el informe `.md`, el JSON y el PDF corregido en la carpeta que indique el usuario (por defecto `viga-voladizo/revisiones/`, que está excluida de git porque contiene datos de estudiantes).
 
 ## Principios
 
