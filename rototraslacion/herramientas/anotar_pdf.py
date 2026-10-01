@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Atajo a comun/anotar_pdf.py con los encabezados de ítem del Taller 3 (items.json de esta carpeta).
+"""Atajo a comun/anotar_pdf.py con los encabezados de ítem del Taller 2 (items.json de esta carpeta).
 
 Uso:
-    python3 viga-voladizo/herramientas/anotar_pdf.py taller.pdf correccion.json -o taller_CORREGIDO.pdf
+    python3 rototraslacion/herramientas/anotar_pdf.py taller.pdf correccion.json -o taller_CORREGIDO.pdf
 """
 import os
 import sys

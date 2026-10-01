@@ -1,0 +1,30 @@
+[
+ {
+  "id": "d(t)",
+  "patron": "^Construya el gr[aá]fico Posici[oó]n"
+ },
+ {
+  "id": "Tabla 3",
+  "patron": "^Dada la teor[ií]a"
+ },
+ {
+  "id": "Hipótesis",
+  "patron": "Formule una hip[oó]tesis"
+ },
+ {
+  "id": "KRot y KTras",
+  "patron": "Construya un gr[aá]fico de"
+ },
+ {
+  "id": "KTot, Ug y Emec",
+  "patron": "Construya las gr[aá]ficas de"
+ },
+ {
+  "id": "Promedio Emec",
+  "patron": "determine el valor promedio"
+ },
+ {
+  "id": "Conclusión",
+  "patron": "Conclusi[oó]n\\s*:"
+ }
+]

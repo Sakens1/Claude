@@ -13,10 +13,10 @@ Agente especializado en corregir el **Taller 3: Flexión de una viga en voladizo
 | `pauta/Pauta_Taller3_Viga_Voladiza.docx` | La misma pauta en Word, para el docente. |
 | `conocimiento/marco_teorico.md` | Resumen de la guía de estudio y notas físicas para el revisor. |
 | `herramientas/verificar_calculos.py` | Recalcula I, pendiente, Y, E% e incertidumbre con los datos de un grupo y detecta errores de unidades. |
-| `herramientas/anotar_pdf.py` | Genera el taller corregido: copia exacta del PDF del grupo con el puntaje junto a cada ítem y un comentario en los espacios en blanco del ítem cuando hay descuento. |
-| `herramientas/extraer_taller.py` | Extrae a texto un taller .docx/.pdf (incluida la Tabla 2 dentro del cuadro de texto) y sus imágenes. |
+| `herramientas/anotar_pdf.py` | Atajo a `comun/anotar_pdf.py` con `items.json` de esta carpeta. Genera el taller corregido: copia exacta del PDF del grupo con el puntaje junto a cada ítem y un comentario en los espacios en blanco del ítem cuando hay descuento. |
+| `herramientas/extraer_taller.py` | Atajo a `comun/extraer_taller.py`. Extrae a texto un taller .docx/.pdf (incluida la Tabla 2 dentro del cuadro de texto) y sus imágenes. |
 | `herramientas/generar_solucion.py` | Genera el taller desarrollado con los datos de cualquier laboratorio (o los de ejemplo). |
-| `herramientas/pauta_a_docx.py` | Regenera la pauta .docx desde el .md. |
+| `herramientas/pauta_a_docx.py` | Regenera la pauta .docx desde el .md (usa `comun/md_a_docx.py`). |
 | `fuentes/` | Enunciado original del taller y guía de estudio. |
 
 ## Resultado de la solución modelo

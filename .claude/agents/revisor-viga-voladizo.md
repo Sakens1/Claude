@@ -26,7 +26,8 @@ Todas las rutas son relativas a la raíz del repositorio:
 ## Procedimiento de revisión (para cada taller)
 
 1. **Extraer el contenido**:
-   `python3 viga-voladizo/herramientas/extraer_taller.py <archivo> --imagenes <dir_temporal>`
+   `python3 viga-voladizo/herramientas/extraer_taller.py <archivo> --imagenes <directorio_nuevo_y_vacío>`
+   Usa un directorio de imágenes nuevo para cada taller (no reutilices uno con restos de otras corridas).
    El extractor lee también la Tabla 2, que está dentro de un cuadro de texto, y aplana sub/superíndices (p. ej. "L3" es L³, "10-12" es 10⁻¹²). Si existe una imagen del gráfico (ítem 1.5), ábrela con Read para verificar ejes, rótulos, línea de tendencia y ecuación. Si la extracción falla o el archivo es una imagen/escaneo, lee el archivo directamente con Read.
 2. **Transcribir los datos del grupo**: b, h, L (Tabla 1), masas y flechas (Tabla 2), y los valores que informan: I, ecuación de la tendencia, Y, valor teórico, E%.
 3. **Recalcular** con el verificador, indicando las unidades en que vienen los datos y los valores informados:
