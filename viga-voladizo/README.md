@@ -14,7 +14,7 @@ Agente especializado en corregir el **Taller 3: Flexión de una viga en voladizo
 | `conocimiento/marco_teorico.md` | Resumen de la guía de estudio y notas físicas para el revisor. |
 | `herramientas/verificar_calculos.py` | Recalcula I, pendiente, Y, E% e incertidumbre con los datos de un grupo y detecta errores de unidades. |
 | `herramientas/extraer_taller.py` | Extrae a texto un taller .docx/.pdf (incluida la Tabla 2 dentro del cuadro de texto) y sus imágenes. |
-| `herramientas/generar_solucion.py` | Regenera la solución modelo y el gráfico. |
+| `herramientas/generar_solucion.py` | Genera el taller desarrollado con los datos de cualquier laboratorio (o los de ejemplo). |
 | `herramientas/pauta_a_docx.py` | Regenera la pauta .docx desde el .md. |
 | `fuentes/` | Enunciado original del taller y guía de estudio. |
 
@@ -26,7 +26,18 @@ Regla de acero, b = 25,0 mm, h = 0,80 mm, L = 250 mm, masas de 10 a 100 g:
 - Ajuste: y_F = 0,02526·F + 0,00003 (R² = 0,9993)
 - Y_exp = L³/(3·m·I) = 1,93×10¹¹ Pa ≈ 193 GPa, frente a 200 GPa del acero: E% = 3,4 %
 
-Los datos son **ilustrativos**: muestran el procedimiento completo. Cada grupo se corrige con sus propios datos.
+Los datos son **de ejemplo**. Como cada laboratorio toma sus propios datos en el momento, la corrección nunca compara contra estos números: el agente recalcula todo con los datos de cada grupo.
+
+### Solución desarrollada con los datos de un laboratorio
+
+```bash
+python3 viga-voladizo/herramientas/generar_solucion.py \
+  --b 25.1 --h 0.79 --L 300 --dimensiones-en-mm \
+  --masas 20 40 60 80 100 --masas-en-g --flechas 6 12.5 18 24.5 31 --flechas-en-mm \
+  --etiqueta "Lab martes 10:00" --salida viga-voladizo/solucion/lab_martes.docx
+```
+
+Genera el taller completo (tablas, gráfico, cálculos, comparación y conclusión) y redacta los juicios según los resultados: si el error es alto, si la hipótesis se confirma, si se respetan las pequeñas deformaciones, etc. Opciones: `--material` (acero, acero_inoxidable, aluminio, laton, cobre) o `--Y-teorico` en Pa; máximo 10 mediciones (filas de la Tabla 2).
 
 ## Uso del agente
 
@@ -51,4 +62,4 @@ Requisitos: Python 3. `verificar_calculos.py` no necesita librerías externas; `
 ## Ajustes
 
 - Puntajes y criterios: editar `pauta/pauta_taller3.md` (y regenerar el .docx con `pauta_a_docx.py`).
-- Datos de la solución modelo: constantes al inicio de `herramientas/generar_solucion.py`.
+- Datos de ejemplo de la solución: constante `EJEMPLO` en `herramientas/generar_solucion.py`.
