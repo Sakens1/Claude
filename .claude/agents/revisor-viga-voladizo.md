@@ -45,7 +45,12 @@ Todas las rutas son relativas a la raíz del repositorio:
      {"grupo": "Nombres", "total": 85, "maximo": 100, "nota": "5,9",
       "items": {"1.1": {"puntaje": 7, "max": 10, "comentario": "..."}, "1.3": {"puntaje": 15, "max": 15}, ...}}
      ```
-     Incluye los 11 ítems puntuados (1.1, 1.2, 1.3, 1.4, 1.5, 1.5.1, 1.5.2, 1.6, 1.7.1, 1.7.2, 1.8). El campo `comentario` va solo en los ítems con descuento: dirigido a los estudiantes, **breve** (idealmente una línea, máximo unas 3), diciendo qué faltó o qué está mal y cómo corregirlo. El detalle completo queda en el informe para el docente.
+     Incluye los 11 ítems puntuados (1.1, 1.2, 1.3, 1.4, 1.5, 1.5.1, 1.5.2, 1.6, 1.7.1, 1.7.2, 1.8). El campo `comentario` va solo en los ítems con descuento (no se comentan los ítems con puntaje completo ni se destacan aciertos). **Estilo de los comentarios (definido por el docente):**
+     - Lenguaje simple y directo, fácil de entender para un estudiante de primer año: sin fórmulas, símbolos ni jerga (nada de "c_f", "I ∝ h³", "intercepto", "R²", "arrastre"). Usa palabras cotidianas: "la pendiente indica cuánto baja la regla por cada newton", "el término independiente (el desplazamiento sin peso colgado)", "qué tan bien se ajustan los puntos a la recta".
+     - Redacción **impersonal**: "Falta…", "Se debe…", "Los nombres de los ejes están cambiados…" (no "ustedes" ni "tú").
+     - Mencionar **todo lo que restó puntos** en el ítem, una frase corta por cada cosa, diciendo qué faltó o qué está mal y qué hacer. Un número concreto ayuda si es simple (p. ej. "el error daba 26 %", "cerca de 200 GPa, porque la regla es de acero").
+     - Breve: idealmente 1 a 2 líneas, máximo 3. El detalle técnico completo queda en el informe para el docente.
+     Ejemplo: "Falta indicar qué valor se esperaba obtener (cerca de 200 GPa, porque la regla es de acero) y que esto se cumple solo si la regla se dobla poco y vuelve a su forma." 
    - Ejecuta: `python3 viga-voladizo/herramientas/anotar_pdf.py <taller.pdf> <correccion.json> -o <taller>_CORREGIDO.pdf`
    - Si la herramienta avisa que un comentario no cupo (queda como nota emergente, que no se imprime), acórtalo y vuelve a ejecutarla hasta que no haya avisos.
    - Revisa visualmente el resultado (`pdftoppm -r 60 -png` y Read): las marcas no deben tapar contenido ni quedar sobre gráficos.
