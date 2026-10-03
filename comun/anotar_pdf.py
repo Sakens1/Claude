@@ -193,6 +193,9 @@ class MapaBlancos:
                             self.verticales += [(r.x0, r.y0, r.y1), (r.x1, r.y0, r.y1)]
                     if r.width > 80 and r.height > 50 and r.width * r.height < 0.4 * page.rect.width * page.rect.height:
                         rects.append(r)  # (los rectángulos casi de página completa son fondos, no gráficos)
+        # los bordes verticales (aunque sean de 1 px, bajo la tolerancia) no se pueden cruzar
+        for x, v0, v1 in self.verticales:
+            self.ocupar(x - 0.8, v0, x + 0.8, v1)
         # gráficos vectoriales (p. ej. de Excel): si un rectángulo contiene muchos trazos, se ocupa la
         # zona que abarcan esos trazos (no el recuadro completo, que puede tener espacio libre para escribir)
         for r in rects:
@@ -377,7 +380,8 @@ def anotar(origen, corr, salida, spec):
         x = y0c = None
         # 1) a la altura del enunciado; 2) justo encima; 3) justo debajo. Lo más a la derecha posible,
         #    sin tapar nada (bordes, gráficos, texto).
-        for ya in (r.y0 - 2, r.y0 - alto_c - 1, r.y1 + 1):
+        # (r.y0 + 1: justo bajo el borde superior de una celda cuando el enunciado está pegado a él)
+        for ya in (r.y0 - 2, r.y0 + 1, r.y0 - alto_c - 1, r.y1 + 1):
             xx = (celdas[k][1] - 2 if k in celdas else W) - ancho - 3
             limite = r.x1 + 2 if ya == r.y0 - 2 else tx0
             while xx >= limite:

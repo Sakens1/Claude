@@ -142,6 +142,19 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 6. **Coherencia interna**: tablas, gráficos y respuestas deben coincidir entre sí.
 7. **Datos sospechosos** o copiados: no se descuenta automáticamente; se informa al docente.
 
+## Criterios homologados (decididos al corregir el primer lote)
+
+| Situación | Criterio |
+|---|---|
+| Conclusión P2: compara k₁ y k₂ con sus valores numéricos pero sin calcular la diferencia porcentual | 1/3 en el criterio de diferencia porcentual. |
+| Conclusión P2: juicio de consistencia | 3 = juicio explícito y correcto respecto del ~10 % (una diferencia de 10–11 % se considera dentro); 2 = juicio vago ("del mismo orden"); 0 = sin juicio o contradictorio con los datos (p. ej. "cercanas" con ~18 % de diferencia). |
+| Conclusión P2: causas | 5 = dos o más causas concretas ligadas a sus datos (puntos que se alejan de la recta, intercepto, masa del resorte, tensión inicial); 4 = dos o más causas concretas de la lista, sin ligarlas a sus datos; 3 = una causa concreta ligada a sus datos, o una coherente y otra que contradice sus datos; 2 = una causa concreta sin ligar; 0 = solo "errores experimentales / de medición". |
+| Relación algebraica pedida en un ítem pero escrita solo en otro (o solo en el gráfico) | 1 pt en ese criterio ("la menciona sin números"). |
+| Análisis P1 sin comentar un intercepto grande del gráfico 1 | Sin descuento si juzga con R² o ley de Hooke (el intercepto puede deberse a la tensión inicial del resorte). |
+| Un valor de F mal copiado en la Tabla 1 que no afecta al gráfico | −1 por fila, como dice la pauta. |
+| Punto (0,0) agregado a las tablas o gráficos | No se descuenta en la tabla ni en k; su efecto en los resultados se evalúa en las causas de la conclusión. |
+| k₂ correcto sin escribir la relación pendiente = 4π²/k | 1/3 en ese criterio. |
+
 ## Formato del informe de revisión
 
 1. Identificación del grupo y archivo.
