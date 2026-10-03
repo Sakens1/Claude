@@ -24,7 +24,11 @@ Rutas relativas a la raíz del repositorio:
 
 ## Criterio del docente sobre los datos
 
-Datos de **laboratorio real** (resortes, regla, cronómetro) con **exigencia baja**: se acepta el error humano. No descuentes por dispersión ni por R² moderado. Evalúa el **método** (gráficos pedidos, pendientes, despejes, unidades), la **coherencia** entre tablas, gráficos y respuestas, y que el **análisis** sea consistente con los propios datos. Gráfico 1 invertido (F vs x): −2 en el gráfico y no se descuenta k si está bien calculado con su gráfico. Diferencia razonable entre k₁ y k₂: hasta ~10 %.
+Datos de **laboratorio real** (resortes, regla, cronómetro). **La pauta es estricta en método, gráficos y análisis** (decisión del docente tras el primer lote, en el que se dieron puntajes completos a gráficos y análisis que no los merecían):
+- Se tolera la dispersión propia de las mediciones (tiempo de reacción, lectura de la regla).
+- **Se descuenta**: filas o puntos inventados que no son mediciones (como (0,0)); ajustes que no representan los datos; gráficos con escalas o ejes mal leídos; y análisis que no reconocen o contradicen lo que muestran sus datos (p. ej. "clara tendencia recta" con R² = 0,87, no comentar un intercepto grande, llamar "cercanas" a constantes que difieren más de 10 %).
+- **Mira cada gráfico con atención** (Read sobre la página): ¿todos los puntos son mediciones de la tabla?, ¿la recta pasa cerca de los puntos?, ¿el R² y la ecuación corresponden a esos datos? Recalcula el ajuste sin puntos agregados para medir su efecto.
+- Gráfico 1 invertido (F vs x): −2 en el gráfico y no se descuenta k si está bien calculado con su gráfico. Diferencia razonable entre k₁ y k₂: hasta ~10 %.
 
 ## Física esencial
 
@@ -47,20 +51,24 @@ Datos de **laboratorio real** (resortes, regla, cronómetro) con **exigencia baj
 4. **Puntuar ítem por ítem** con la pauta (11 ítems, total 100). Arrastre de errores (un mismo error se descuenta una vez), coherencia interna y puntaje parcial. Cada descuento debe tener una razón concreta y verificable.
 5. **Redactar el informe** con el formato al final de la pauta.
 6. **Generar el taller corregido** (entregable para los estudiantes): una **copia exacta** del PDF del grupo con el puntaje de cada ítem junto a su enunciado y un comentario en rojo dentro del mismo ítem cuando hay descuento, en un espacio en blanco (nunca sobre lo escrito por los estudiantes). El total y la nota van en el margen superior de la primera página.
-   - Escribe un JSON. Las claves de `items` deben ser exactamente: `"Hipótesis P1"`, `"Tabla 1"`, `"Gráfico 1"`, `"k parte 1"`, `"Análisis P1"`, `"Hipótesis P2"`, `"Tabla 2"`, `"Gráfico 2"`, `"k parte 2"`, `"Complete la frase"`, `"Conclusión P2"`.
+   - Escribe un JSON con dos comentarios por ítem:
+     - `justificacion` (**verde, para el docente, en TODOS los ítems**): qué está correcto y por qué obtuvo ese puntaje, citando el desglose de la pauta (p. ej. "Orientación, título, ejes, ecuación y R² correctos (7/7); el punto (0,0) no es medición y baja R² de 0,998 a 0,87 (0/3)."). Puede ser técnica. Breve: 1 a 2 líneas.
+     - `comentario` (**rojo, para el estudiante, solo si hay descuento**): con el estilo que se indica más abajo.
+     Las claves de `items` deben ser exactamente: `"Hipótesis P1"`, `"Tabla 1"`, `"Gráfico 1"`, `"k parte 1"`, `"Análisis P1"`, `"Hipótesis P2"`, `"Tabla 2"`, `"Gráfico 2"`, `"k parte 2"`, `"Complete la frase"`, `"Conclusión P2"`.
      ```json
      {"grupo": "Nombres", "total": 84, "maximo": 100, "nota": "5,8",
-      "items": {"Hipótesis P1": {"puntaje": 6, "max": 6}, "Gráfico 1": {"puntaje": 8, "max": 10, "comentario": "..."}, ...}}
+      "items": {"Hipótesis P1": {"puntaje": 6, "max": 6, "justificacion": "..."},
+                "Gráfico 1": {"puntaje": 7, "max": 10, "justificacion": "...", "comentario": "..."}, ...}}
      ```
-     El campo `comentario` va solo en los ítems con descuento. **Estilo de los comentarios (definido por el docente):**
+     **Estilo de los comentarios rojos para el estudiante (definido por el docente):**
      - Lenguaje simple y directo, para un estudiante de primer año: sin fórmulas, símbolos ni jerga (nada de "4π²", "1/k", "R²", "m_ef", "arrastre"). Usa palabras cotidianas: "la inclinación de la recta", "qué tan bien se ajustan los puntos a la recta", "el peso del propio resorte".
      - Redacción **impersonal**: "Falta…", "Se debe…", "El periodo es el tiempo de 10 oscilaciones dividido por 10."
      - Mencionar **todo lo que restó puntos** en el ítem, una frase corta por cada cosa, diciendo qué faltó o qué está mal y qué hacer. Un número concreto ayuda si es simple (p. ej. "las dos constantes difieren cerca de 15 %").
      - Breve: idealmente 1 a 2 líneas, máximo 3. El detalle técnico queda en el informe para el docente.
      Ejemplo: "La constante del resorte es el inverso de la inclinación de la recta, no la inclinación misma."
    - Ejecuta: `python3 mas/herramientas/anotar_pdf.py <taller.pdf> <correccion.json> -o <taller>_CORREGIDO.pdf`
-   - Si avisa que un comentario no cupo (nota emergente, que no se imprime), acórtalo y repite hasta que no haya avisos. Si avisa que **no encontró** el enunciado de algún ítem, crea una copia de `mas/herramientas/items.json` con un patrón que sí aparezca en ese PDF y pásala con `--items`.
-   - Revisa visualmente (`pdftoppm -r 60 -png` y Read): en las celdas de Tabla y Gráfico (lado a lado), cada puntaje y comentario debe quedar en su propia celda.
+   - Si avisa que un comentario no cupo (nota emergente, que no se imprime), acorta ese comentario (el aviso dice si es el verde o el rojo) y repite hasta que no haya avisos. Si avisa que **no encontró** el enunciado de algún ítem, crea una copia de `mas/herramientas/items.json` con un patrón que sí aparezca en ese PDF y pásala con `--items`.
+   - Revisa visualmente (`pdftoppm -r 60 -png` y Read): en cada ítem debe verse el verde y, si hay descuento, el rojo; en las celdas de Tabla y Gráfico (lado a lado), cada puntaje y comentario debe quedar en su propia celda.
    - Ejecuta `python3 comun/verificar_superposicion.py <taller_original.pdf> <taller>_CORREGIDO.pdf`: debe responder "OK".
    - Si el taller vino en .docx, pide al usuario la versión PDF (o conviértelo si hay LibreOffice disponible).
 
@@ -101,7 +109,8 @@ Si se piden varios talleres, revisa cada uno por separado y al final agrega una 
 ## Principios
 
 - **Sin errores**: verifica cada cálculo con el verificador y cada concepto dudoso con la pauta, el marco teórico o la web antes de descontar.
-- **Justicia y consistencia**: el mismo error recibe el mismo descuento en todos los grupos. Ante la duda, el puntaje más favorable al estudiante, explicado en observaciones.
+- **Justicia y consistencia**: el mismo error recibe el mismo descuento en todos los grupos.
+- **Sin crédito por suposición**: cada punto otorgado debe estar respaldado por lo escrito o graficado; no completes lo que el grupo no escribió. Un puntaje completo exige que el ítem esté realmente completo y correcto (la justificación verde debe poder decir por qué).
 - **Corrige el método con los datos del grupo**, no contra la solución modelo.
 - **No inventes contenido**: si un ítem está en blanco o ilegible, puntúa 0 o indica "ilegible" y repórtalo.
 - **Retroalimentación formativa**: concreta, respetuosa y útil.

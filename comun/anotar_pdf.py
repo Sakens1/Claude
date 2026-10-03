@@ -4,6 +4,8 @@ mismo tamaño y misma posición de todo el contenido), sobre la que se escribe:
 
 - el puntaje de cada ítem en el margen derecho, a la altura de su enunciado
   (verde si tiene puntaje completo, rojo si tiene descuento);
+- si el JSON trae "justificacion", un comentario en verde para el docente (qué está correcto y por qué
+  el puntaje), en todos los ítems que la tengan;
 - si hubo descuento, un comentario en rojo dentro del mismo ítem, ubicado en un espacio en
   blanco entre su enunciado y el ítem siguiente (nunca sobre lo escrito por los estudiantes);
 - el puntaje total y la nota en el margen superior de la primera página.
@@ -30,7 +32,8 @@ Formato de correccion.json:
   "grupo": "Nombre Apellido, ...",
   "total": 85, "maximo": 100, "nota": "5,9",
   "items": {
-    "1.1": {"puntaje": 7, "max": 10, "comentario": "texto (solo si hay descuento)"},
+    "1.1": {"puntaje": 7, "max": 10, "justificacion": "para el docente (verde)",
+            "comentario": "para el estudiante (rojo, solo si hay descuento)"},
     ...
   }
 }
@@ -326,10 +329,19 @@ def anotar(origen, corr, salida, spec):
     faltan = [k for k in items if k not in pos]
 
     # 1) comentarios (se calculan sobre la página original, antes de dibujar nada)
+    #    - verde ("justificacion"): para el docente, qué está correcto y por qué el puntaje (todos los ítems)
+    #    - rojo ("comentario"): para el estudiante, qué está mal (solo ítems con descuento)
     pendientes = []
     for i, k in enumerate(presentes):
         it = items.get(k)
-        if not it or it["puntaje"] >= it["max"] or not it.get("comentario"):
+        if not it:
+            continue
+        textos = []
+        if it.get("justificacion"):
+            textos.append((f"✓ {it['justificacion']}", VERDE, "verde"))
+        if it["puntaje"] < it["max"] and it.get("comentario"):
+            textos.append((f"({fmt(it['puntaje'])}/{fmt(it['max'])}) {it['comentario']}", ROJO, "rojo"))
+        if not textos:
             continue
         p_ini, r_ini = pos[k]
         # el ítem termina en el siguiente enunciado que esté más abajo (no en uno de la misma línea)
@@ -346,22 +358,24 @@ def anotar(origen, corr, salida, spec):
             hasta = min(y_fin, abajo) if p == p_fin else abajo
             if hasta > desde:
                 tramos.append((p, desde, hasta))
-        titulo = f"({fmt(it['puntaje'])}/{fmt(it['max'])}) "
-        texto = titulo + it["comentario"]
-        colocado = buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes, celdas.get(k))
-        if not colocado:
-            avisos.append(k)
-            p, r = pos[k]
-            nota = doc[p].add_text_annot(pymupdf.Point(doc[p].rect.width - 18, r.y0), texto, icon="Comment")
-            nota.set_colors(stroke=ROJO)
-            nota.set_info(title="Corrección")
-            nota.update()
+        for texto, color, nombre in textos:
+            antes = len(pendientes)
+            colocado = buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes, celdas.get(k))
+            if colocado:
+                pendientes[antes] = pendientes[antes] + (color,)
+            else:
+                avisos.append(f"{k} ({nombre})")
+                p, r = pos[k]
+                nota = doc[p].add_text_annot(pymupdf.Point(doc[p].rect.width - 18, r.y0), texto, icon="Comment")
+                nota.set_colors(stroke=color)
+                nota.set_info(title="Corrección")
+                nota.update()
 
-    for p, x, y, lineas, tam in pendientes:
+    for p, x, y, lineas, tam, color in pendientes:
         page = doc[p]
         yy = y + tam
         for ln in lineas:
-            escribir(page, x, yy, ln, tam, ROJO)
+            escribir(page, x, yy, ln, tam, color)
             yy += tam * INTERLINEA
 
     # 2) puntaje junto a cada enunciado, en el margen derecho

@@ -2,7 +2,12 @@
 
 Pauta para evaluar talleres resueltos por los grupos. Cada grupo tiene **sus propios datos** (resortes reales, regla y cronómetro), por lo que no se corrige comparando contra los números de la solución modelo (`../solucion/Taller_MAS_RESUELTO.docx`), sino verificando **método, coherencia interna, unidades y análisis**.
 
-**Criterio del docente sobre los datos:** exigencia baja. Se acepta el error humano (tiempo de reacción, lectura de la regla): no se descuenta por dispersión de los datos ni por un R² moderado. Se evalúa el método, los cálculos y que el análisis sea coherente con los propios datos.
+**Criterio del docente (actualizado tras el primer lote): pauta estricta en método, gráficos y análisis.** Se tolera el error humano propio de las mediciones (tiempo de reacción, lectura de la regla), pero **se descuenta**:
+- inventar o agregar puntos que no son mediciones (por ejemplo una fila o un punto (0,0));
+- un ajuste o gráfico que no representa los datos (puntos que no siguen la recta por un error de método, escalas o ejes mal leídos);
+- un análisis que no reconoce o contradice lo que muestran sus propios datos (llamar "clara tendencia recta" a un ajuste con R² = 0,87, no comentar un intercepto grande, decir "cercanas" a constantes que difieren más de 10 %).
+
+**Cada punto otorgado debe estar respaldado por algo escrito o visible en el taller.** Ante la duda no se completa lo que el grupo no escribió.
 
 ## Resumen de puntajes
 
@@ -52,7 +57,7 @@ Herramienta: `python3 ../herramientas/verificar_mas.py` recalcula todo con los d
 
 | Pts | Criterio |
 |---|---|
-| 2 | Al menos 5 mediciones con masas distintas (la plantilla tiene 6). 1 si tiene 3 o 4. |
+| 2 | Al menos 5 **mediciones reales** con masas distintas (la plantilla tiene 6). Una fila (0, 0, 0) agregada no es una medición: no cuenta y descuenta 1. 1 si quedan 3 o 4 mediciones. |
 | 2 | F = m·g correcto en todas las filas (masa en kg). −1 por fila mal (mínimo 0). |
 | 2 | Deformación x (no la longitud total) en metros, coherente con la regla. 1 si está en cm/mm con la unidad indicada; 0 si usa la longitud total sin restar L₀. |
 
@@ -63,10 +68,10 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 | Pts | Criterio |
 |---|---|
 | 2 | Dispersión con **x en el eje Y y F en el eje X** (lo pedido). Si está invertido (F vs x): 0 en este criterio (−2, criterio del docente) y no se descuenta en k si lo calcula bien con su gráfico. |
-| 2 | Título del gráfico. |
+| 1 | Título del gráfico. |
 | 2 | Títulos de ejes con unidades (1 si faltan las unidades). |
-| 2 | Línea de tendencia lineal con su ecuación visible. |
-| 2 | R² visible. |
+| 2 | Línea de tendencia lineal con su ecuación y R² visibles (1 si falta uno de los dos). |
+| 3 | **El ajuste representa los datos medidos**: solo puntos medidos (sin puntos inventados como (0,0)), los puntos siguen la recta y la ecuación corresponde a esos datos. 0 si se agregó un punto que no es medición y altera la recta, o si la recta no representa los datos por un error de método. 1–2 si hay un problema menor (un punto mal graficado, escala que dificulta la lectura). |
 
 ### k parte 1 (6 pts)
 
@@ -80,7 +85,7 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 
 | Pts | Criterio |
 |---|---|
-| 3 | Juzga si los datos son acordes a lo esperado con criterio: linealidad (R²), intercepto cercano a cero, relación con la ley de Hooke o la hipótesis. |
+| 3 | Juzga si los datos son acordes a lo esperado con un criterio **coherente con sus datos**: linealidad (R²) y relación con la ley de Hooke o la hipótesis. Si el intercepto o un punto se apartan claramente (por ejemplo intercepto mayor al 10 % de la deformación máxima, R² < 0,98), debe reconocerlo y explicarlo (p. ej. tensión inicial del resorte): 1 si no lo comenta. 0 si el juicio contradice los datos ("clara tendencia recta" con R² = 0,87). |
 | 3 | Incluye la **relación algebraica** obtenida del gráfico 1 (p. ej. x = 0,0397·F + 0,0004, o F = k·x con su valor). 1 si la menciona sin números. |
 
 ### Hipótesis P2 (10 pts)
@@ -94,7 +99,7 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 
 | Pts | Criterio |
 |---|---|
-| 2 | Al menos 6 mediciones con masas distintas (la plantilla tiene 8). 1 si tiene 4 o 5. |
+| 2 | Al menos 6 **mediciones reales** con masas distintas (la plantilla tiene 8). Una fila (0, 0, 0) agregada no es una medición (con masa cero el resorte también oscila): no cuenta y descuenta 1. 1 si quedan 4 o 5 mediciones. |
 | 2 | Tiempo de 10 oscilaciones registrado. |
 | 2 | T = t/10 correcto en todas las filas. |
 | 2 | T² correcto en todas las filas, con unidades (s²). |
@@ -104,10 +109,10 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 | Pts | Criterio |
 |---|---|
 | 2 | Dispersión de **T² (eje Y) vs m (eje X)**. Si grafica T vs m: 0 aquí y se aplica arrastre en k. Si los ejes están invertidos (m vs T²): 0 aquí, sin descuento en k si lo calcula bien. |
-| 2 | Título. |
+| 1 | Título. |
 | 2 | Títulos de ejes con unidades (1 si faltan unidades). |
-| 2 | Línea de tendencia lineal con ecuación. |
-| 2 | R² visible. |
+| 2 | Línea de tendencia lineal con ecuación y R² visibles (1 si falta uno de los dos). |
+| 3 | **El ajuste representa los datos medidos**: sin puntos inventados (como (0,0)), los puntos siguen la recta y la ecuación corresponde a esos datos. 0 si se agregó un punto que no es medición y altera la recta o el intercepto, o si la recta no representa los datos por un error de método. 1–2 si hay un problema menor. |
 
 ### k parte 2 (10 pts)
 
@@ -138,7 +143,8 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 2. **Unidades**: un resultado sin unidad pierde el punto de unidad del ítem; una conversión errada (g, cm, mm) se descuenta una vez.
 3. **Tolerancia** ±5 % frente al recálculo.
 4. **Erratas de la plantilla** (d²y/dt² + ω² = 0; T² = 2π²·m/k): no se descuentan si solo se copian; sí si se usan para calcular mal k.
-5. **Datos**: no se descuenta por dispersión ni R² moderado; sí si el análisis contradice los propios datos.
+5. **Datos**: se tolera la dispersión propia de las mediciones, pero se descuentan los puntos inventados, los ajustes que no representan los datos y los análisis que no reconocen o contradicen lo que muestran sus propios datos.
+8. **Sin crédito por suposición**: cada punto otorgado debe estar respaldado por lo escrito o graficado. No se completa lo que el grupo no escribió ni se da el beneficio de la duda en lo conceptual.
 6. **Coherencia interna**: tablas, gráficos y respuestas deben coincidir entre sí.
 7. **Datos sospechosos** o copiados: no se descuenta automáticamente; se informa al docente.
 
@@ -150,9 +156,9 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 | Conclusión P2: juicio de consistencia | 3 = juicio explícito y correcto respecto del ~10 % (una diferencia de 10–11 % se considera dentro); 2 = juicio vago ("del mismo orden"); 0 = sin juicio o contradictorio con los datos (p. ej. "cercanas" con ~18 % de diferencia). |
 | Conclusión P2: causas | 5 = dos o más causas concretas ligadas a sus datos (puntos que se alejan de la recta, intercepto, masa del resorte, tensión inicial); 4 = dos o más causas concretas de la lista, sin ligarlas a sus datos; 3 = una causa concreta ligada a sus datos, o una coherente y otra que contradice sus datos; 2 = una causa concreta sin ligar; 0 = solo "errores experimentales / de medición". |
 | Relación algebraica pedida en un ítem pero escrita solo en otro (o solo en el gráfico) | 1 pt en ese criterio ("la menciona sin números"). |
-| Análisis P1 sin comentar un intercepto grande del gráfico 1 | Sin descuento si juzga con R² o ley de Hooke (el intercepto puede deberse a la tensión inicial del resorte). |
+| Análisis P1 sin comentar un intercepto grande del gráfico 1 | Reemplazado por el criterio estricto: 1/3 en el juicio si no lo comenta (el intercepto puede deberse a la tensión inicial del resorte, y eso es lo que debe explicar). |
 | Un valor de F mal copiado en la Tabla 1 que no afecta al gráfico | −1 por fila, como dice la pauta. |
-| Punto (0,0) agregado a las tablas o gráficos | No se descuenta en la tabla ni en k; su efecto en los resultados se evalúa en las causas de la conclusión. |
+| Punto (0,0) agregado a las tablas o gráficos | Reemplazado por el criterio estricto: −1 en la tabla y 0/3 en "el ajuste representa los datos" del gráfico si altera la recta. k se corrige con su pendiente (arrastre). |
 | k₂ correcto sin escribir la relación pendiente = 4π²/k | 1/3 en ese criterio. |
 
 ## Formato del informe de revisión
