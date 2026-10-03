@@ -1,0 +1,51 @@
+[
+ {
+  "id": "Hipótesis P1",
+  "patron": "Al aumentar el peso del cuerpo"
+ },
+ {
+  "id": "Tabla 1",
+  "patron": "^Tabla 1"
+ },
+ {
+  "id": "Gráfico 1",
+  "patron": "^Gr[aá]fico 1"
+ },
+ {
+  "id": "k parte 1",
+  "patron": "^Determine la constante el"
+ },
+ {
+  "id": "Análisis P1",
+  "patron": "comportamiento de los datos y la informaci[oó]n del gr[aá]fico 1"
+ },
+ {
+  "id": "_parte2",
+  "patron": "^Parte II",
+  "puntua": false
+ },
+ {
+  "id": "Hipótesis P2",
+  "patron": "Al aumentar la masa del cuerpo oscilante"
+ },
+ {
+  "id": "Tabla 2",
+  "patron": "^Tabla 2"
+ },
+ {
+  "id": "Gráfico 2",
+  "patron": "^Gr[aá]fico 2"
+ },
+ {
+  "id": "k parte 2",
+  "patron": "^Determine la constante el"
+ },
+ {
+  "id": "Complete la frase",
+  "patron": "^Complete la frase"
+ },
+ {
+  "id": "Conclusión P2",
+  "patron": "^CONCLUSI[OÓ]N parte 2"
+ }
+]

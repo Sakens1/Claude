@@ -239,7 +239,7 @@ ANCHOS = [1.0, 0.75, 0.6, 0.5, 0.46, 0.42, 0.38]  # fracciones del ancho disponi
 MARGEN_INTERNO = 5                    # separación con bordes de recuadros
 
 
-def buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes):
+def buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes, celda=None):
     """Ubica el comentario en el primer espacio en blanco del ítem (en orden de lectura), sin cruzar
     texto, imágenes, gráficos ni bordes de recuadros. Prefiere el ancho completo de la franja disponible
     (aunque con letra menor) y prueba posiciones a la izquierda, a la derecha e intermedias."""
@@ -247,7 +247,10 @@ def buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes):
         for tam in TAMANOS:
             for p, a, b in tramos:
                 mejor = None
-                for L, R in mapa(p).intervalos(a, b, tx0, tx1):
+                ivs = mapa(p).intervalos(a, b, tx0, tx1)
+                if celda:  # ítem dentro de una celda: solo franjas dentro de esa celda
+                    ivs = [(L, R) for L, R in ivs if L >= celda[0] - 1 and R <= celda[1] + 1] or [celda]
+                for L, R in ivs:
                     disp = (R - MARGEN_INTERNO) - (L + MARGEN_INTERNO)
                     w = disp * f
                     if w < 80:
@@ -298,6 +301,24 @@ def anotar(origen, corr, salida, spec):
 
     items = corr["items"]
     presentes = [it["id"] for it in spec if it["id"] in pos]
+
+    def misma_linea(k1, k2):
+        (p1, r1), (p2, r2) = pos[k1], pos[k2]
+        return p1 == p2 and abs(r1.y0 - r2.y0) < 6
+
+    # ítems que comparten línea con otro (p. ej. "Tabla 1" y "Gráfico 1" en celdas lado a lado):
+    # su comentario y su puntaje se limitan a la celda que contiene su enunciado
+    celdas = {}
+    for k in presentes:
+        if any(o != k and misma_linea(k, o) for o in presentes):
+            p, r = pos[k]
+            # bordes verticales que cruzan la propia línea del enunciado (no los de tablas interiores)
+            vs = [x for x, v0, v1 in mapa(p).verticales if v0 <= r.y0 + 1 and v1 >= r.y1 - 1]
+            izq = [x for x in vs if x <= r.x0 + 1]
+            der = [x for x in vs if x >= r.x0 + 30]
+            if izq and der:
+                celdas[k] = (max(izq), min(der))
+
     avisos = []
     faltan = [k for k in items if k not in pos]
 
@@ -308,7 +329,8 @@ def anotar(origen, corr, salida, spec):
         if not it or it["puntaje"] >= it["max"] or not it.get("comentario"):
             continue
         p_ini, r_ini = pos[k]
-        sig = presentes[i + 1] if i + 1 < len(presentes) else None
+        # el ítem termina en el siguiente enunciado que esté más abajo (no en uno de la misma línea)
+        sig = next((o for o in presentes[i + 1:] if not misma_linea(k, o)), None)
         if sig:
             p_fin, y_fin = pos[sig][0], pos[sig][1].y0 - 1
         else:
@@ -323,7 +345,7 @@ def anotar(origen, corr, salida, spec):
                 tramos.append((p, desde, hasta))
         titulo = f"({fmt(it['puntaje'])}/{fmt(it['max'])}) "
         texto = titulo + it["comentario"]
-        colocado = buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes)
+        colocado = buscar_lugar(texto, tramos, mapa, tx0, tx1, pendientes, celdas.get(k))
         if not colocado:
             avisos.append(k)
             p, r = pos[k]
@@ -356,7 +378,7 @@ def anotar(origen, corr, salida, spec):
         # 1) a la altura del enunciado; 2) justo encima; 3) justo debajo. Lo más a la derecha posible,
         #    sin tapar nada (bordes, gráficos, texto).
         for ya in (r.y0 - 2, r.y0 - alto_c - 1, r.y1 + 1):
-            xx = W - ancho - 3
+            xx = (celdas[k][1] - 2 if k in celdas else W) - ancho - 3
             limite = r.x1 + 2 if ya == r.y0 - 2 else tx0
             while xx >= limite:
                 if m.buscar(ya - 1, ya + alto_c + 1, xx - 1, xx + ancho + 1, alto_c + 1) is not None:
