@@ -13,7 +13,7 @@
  },
  {
   "id": "k parte 1",
-  "patron": "^Determine la constante el"
+  "patron": "Determine la constante el"
  },
  {
   "id": "Análisis P1",
@@ -21,7 +21,7 @@
  },
  {
   "id": "_parte2",
-  "patron": "^Parte II",
+  "patron": "Parte II",
   "puntua": false
  },
  {
@@ -38,14 +38,14 @@
  },
  {
   "id": "k parte 2",
-  "patron": "^Determine la constante el"
+  "patron": "Determine la constante el"
  },
  {
   "id": "Complete la frase",
-  "patron": "^Complete la frase"
+  "patron": "Complete la frase"
  },
  {
   "id": "Conclusión P2",
-  "patron": "^CONCLUSI[OÓ]N parte 2"
+  "patron": "CONCLUSI[OÓ]N parte 2"
  }
 ]
