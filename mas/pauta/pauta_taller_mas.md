@@ -160,6 +160,9 @@ El enunciado exige: gráfico de dispersión, título, títulos de ejes con unida
 | Un valor de F mal copiado en la Tabla 1 que no afecta al gráfico | −1 por fila, como dice la pauta. |
 | Punto (0,0) agregado a las tablas o gráficos | Reemplazado por el criterio estricto: −1 en la tabla y 0/3 en "el ajuste representa los datos" del gráfico si altera la recta. k se corrige con su pendiente (arrastre). |
 | k₂ correcto sin escribir la relación pendiente = 4π²/k | 1/3 en ese criterio. |
+| Punto (0,0) agregado al gráfico 2 que casi no cambia la pendiente pero sí el intercepto o el R² | 0/3 en "el ajuste representa los datos", igual que en el gráfico 1 (lectura literal de la pauta). |
+| Análisis P1: afirma proporcionalidad o "como dice la ley de Hooke" sin comentar un intercepto grande | 1/3 en el juicio (la omisión del intercepto ya es el descuento). 0/3 se reserva para un juicio de linealidad que contradice el R² ("clara tendencia recta" con R² = 0,87). |
+| Conclusión P2: juicio del gráfico 2 que no reconoce lo que muestran sus datos | −2 por cada aspecto no reconocido: R² < 0,98; intercepto (positivo o negativo) mayor al 10 % del T² máximo. Bajo esos umbrales no se descuenta en el juicio. |
 
 ## Formato del informe de revisión
 

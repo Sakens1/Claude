@@ -328,7 +328,43 @@ def anotar(origen, corr, salida, spec):
     avisos = []
     faltan = [k for k in items if k not in pos]
 
-    # 1) comentarios (se calculan sobre la página original, antes de dibujar nada)
+    # 1) puntaje junto a cada enunciado, en el margen derecho. Se reserva antes de ubicar los
+    #    comentarios para que quede dentro de su celda y los comentarios lo eviten.
+    cajas = []
+    for k in presentes:
+        if k not in items:
+            continue
+        it = items[k]
+        p, r = pos[k]
+        page = doc[p]
+        W = page.rect.width
+        etiqueta = f"{fmt(it['puntaje'])}/{fmt(it['max'])}"
+        tam = 9
+        ancho = FUENTE_B.text_length(etiqueta, fontsize=tam) + 8
+        alto_c = tam + 6
+        m = mapa(p)
+        x = y0c = None
+        # 1) a la altura del enunciado; 2) justo encima; 3) justo debajo. Lo más a la derecha posible,
+        #    sin tapar nada (bordes, gráficos, texto).
+        # (r.y0 + 1: justo bajo el borde superior de una celda cuando el enunciado está pegado a él)
+        for ya in (r.y0 - 2, r.y0 + 1, r.y0 - alto_c - 1, r.y1 + 1):
+            xx = (celdas[k][1] - 2 if k in celdas else W) - ancho - 3
+            limite = r.x1 + 2 if ya == r.y0 - 2 else tx0
+            while xx >= limite:
+                if m.buscar(ya - 1, ya + alto_c + 1, xx - 1, xx + ancho + 1, alto_c + 1) is not None:
+                    x, y0c = xx, ya
+                    break
+                xx -= 2
+            if x is not None:
+                break
+        if x is None:  # sin espacio libre cerca: margen derecho, a la altura del enunciado
+            x, y0c = min(tx1 + 4, W - ancho - 3), r.y0 - 2
+        y1c = y0c + alto_c
+        m.ocupar(x - 1, y0c - 1, x + ancho + 1, y1c + 1)
+        color = VERDE if it["puntaje"] >= it["max"] else ROJO
+        cajas.append((page, pymupdf.Rect(x, y0c, x + ancho, y1c), etiqueta, tam, color))
+
+    # 2) comentarios (se calculan sobre la página original, antes de dibujar nada)
     #    - verde ("justificacion"): para el docente, qué está correcto y por qué el puntaje (todos los ítems)
     #    - rojo ("comentario"): para el estudiante, qué está mal (solo ítems con descuento)
     pendientes = []
@@ -378,39 +414,7 @@ def anotar(origen, corr, salida, spec):
             escribir(page, x, yy, ln, tam, color)
             yy += tam * INTERLINEA
 
-    # 2) puntaje junto a cada enunciado, en el margen derecho
-    for k in presentes:
-        if k not in items:
-            continue
-        it = items[k]
-        p, r = pos[k]
-        page = doc[p]
-        W = page.rect.width
-        etiqueta = f"{fmt(it['puntaje'])}/{fmt(it['max'])}"
-        tam = 9
-        ancho = FUENTE_B.text_length(etiqueta, fontsize=tam) + 8
-        alto_c = tam + 6
-        m = mapa(p)
-        x = y0c = None
-        # 1) a la altura del enunciado; 2) justo encima; 3) justo debajo. Lo más a la derecha posible,
-        #    sin tapar nada (bordes, gráficos, texto).
-        # (r.y0 + 1: justo bajo el borde superior de una celda cuando el enunciado está pegado a él)
-        for ya in (r.y0 - 2, r.y0 + 1, r.y0 - alto_c - 1, r.y1 + 1):
-            xx = (celdas[k][1] - 2 if k in celdas else W) - ancho - 3
-            limite = r.x1 + 2 if ya == r.y0 - 2 else tx0
-            while xx >= limite:
-                if m.buscar(ya - 1, ya + alto_c + 1, xx - 1, xx + ancho + 1, alto_c + 1) is not None:
-                    x, y0c = xx, ya
-                    break
-                xx -= 2
-            if x is not None:
-                break
-        if x is None:  # sin espacio libre cerca: margen derecho, a la altura del enunciado
-            x, y0c = min(tx1 + 4, W - ancho - 3), r.y0 - 2
-        y1c = y0c + alto_c
-        m.ocupar(x - 1, y0c - 1, x + ancho + 1, y1c + 1)
-        caja = pymupdf.Rect(x, y0c, x + ancho, y1c)
-        color = VERDE if it["puntaje"] >= it["max"] else ROJO
+    for page, caja, etiqueta, tam, color in cajas:
         page.draw_rect(caja, color=color, fill=(1, 1, 1), width=1.0)
         escribir(page, caja.x0 + 4, caja.y1 - 4, etiqueta, tam, color, negrita=True)
 
